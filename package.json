@@ -27,6 +27,7 @@
     "moment": "^2.27.0",
     "nanoid": "^3.1.12",
     "node-sass": "^4.14.1",
+    "python-shell": "^2.0.1",
     "sass-loader": "^9.0.3",
     "v-suggest": "^2.2.0",
     "v-tooltip": "^2.0.3",

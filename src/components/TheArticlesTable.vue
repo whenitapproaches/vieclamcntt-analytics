@@ -10,8 +10,13 @@
 				<TheArticlesTableFetchFacebookDateRange />
 			</div>
 			<div class="column is-narrow">
-				<TheArticlesTableFetchFacebookButton @click="fetchArticlesFromFacebookButton" />
-				<base-button class="is-squared is-info ml-3" v-tooltip="{ content: tooltip }">
+				<TheArticlesTableFetchFacebookButton
+					@click="fetchArticlesFromFacebookButton"
+				/>
+				<base-button
+					class="is-squared is-info ml-3"
+					v-tooltip="{ content: tooltip }"
+				>
 					<base-icon>help</base-icon>
 				</base-button>
 			</div>
@@ -38,16 +43,21 @@
 					v-if="props.row.post_link"
 					class="is-info mx-auto"
 					@click="openExternalLink(props.row.post_link)"
-				>Mở</base-button>
+					>Mở</base-button
+				>
 			</template>
 			<template v-slot:scan="props">
-				<base-button class="is-warning mx-auto" @click="scanArticle(props.row)">PHÂN TÍCH</base-button>
+				<base-button class="is-warning mx-auto" @click="scanArticle(props.row)"
+					>PHÂN TÍCH</base-button
+				>
 			</template>
-			<template v-slot:posted_date="props">{{props.row.posted_date | date_filter}}</template>
+			<template v-slot:posted_date="props">{{
+				props.row.posted_date | date_filter
+			}}</template>
 		</v-client-table>
 		<div class="columns">
 			<div class="column is-narrow">
-				<p>Tổng cộng: {{articles.length}} bài đăng</p>
+				<p>Tổng cộng: {{ articles.length }} bài đăng</p>
 			</div>
 		</div>
 		<div class="columns">
@@ -68,6 +78,10 @@ import TheArticlesTableFetchFacebookButton from "@/components/TheArticlesTableFe
 import TheArticlesTableFetchFacebookDateRange from "@/components/TheArticlesTableFetchFacebookDateRange"
 import TheArticlesTableScanButton from "@/components/TheArticlesTableScanButton"
 import { shell } from "electron"
+
+function delay(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 export default {
 	name: "TheArticlesTable",
@@ -167,11 +181,17 @@ Mỗi quét lấy được khoảng 500 bài.`,
 			shell.openExternal(link)
 		},
 		async scanArticlesButton() {
+			this.createNotification({
+				message:
+					"Đang phân tích..",
+				status: "loading",
+			})
+			await delay(100)
 			await this.scanArticles()
 			this.$router.push({
-				name: "Statistics"
+				name: "Statistics",
 			})
-		}
+		},
 	},
 	filters: {
 		languages_filter(val) {

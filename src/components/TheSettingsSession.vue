@@ -1,9 +1,18 @@
 <template>
 	<div>
 		<h1 class="title">Phiên làm việc</h1>
-		<base-button @click="saveSession" class="is-success has-text-weight-bold mr-5">Lưu phiên làm việc</base-button>
-		<base-button @click="loadSession" class="is-info has-text-weight-bold">Mở phiên làm việc</base-button>
-		<base-button class="is-squared is-info ml-2" v-tooltip="{ content: tooltip }">
+		<base-button
+			@click="saveSession"
+			class="is-success has-text-weight-bold mr-5"
+			>Lưu phiên làm việc</base-button
+		>
+		<base-button @click="loadSession" class="is-info has-text-weight-bold"
+			>Mở phiên làm việc</base-button
+		>
+		<base-button
+			class="is-squared is-info ml-2"
+			v-tooltip="{ content: tooltip }"
+		>
 			<base-icon>help</base-icon>
 		</base-button>
 	</div>
@@ -46,10 +55,10 @@ export default {
 				message: "Mở thành công!",
 			})
 			setTimeout(() => {
+				location.reload()
 				this.$router.push({
 					name: "Statistics",
 				})
-				location.reload()
 			}, 500)
 		},
 	},

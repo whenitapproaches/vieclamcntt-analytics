@@ -39,7 +39,6 @@ export const saveSession = async () => {
     groupSettings
   }
   return new Promise((resolve, reject) => {
-    console.log(userChosenPath)
     if (userChosenPath.filePath) {
       jsonfile.writeFileSync(userChosenPath.filePath, data)
       return resolve()

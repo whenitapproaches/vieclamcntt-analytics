@@ -266,13 +266,6 @@ export default {
 		})
 	},
 	methods: {
-		updateKeywordsInput(keyword, tags) {
-			let array = tags.map((tag) => tag.text)
-			this.updateKeywords({
-				key: keyword,
-				array: array,
-			})
-		},
 		closeDeleteAllConfirmModal() {
 			this.currentDeleteAllConfirm = ""
 		},

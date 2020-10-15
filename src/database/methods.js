@@ -112,12 +112,19 @@ export const makeSetGroupId = function({ db }) {
   }
 }
 
+// import trainData from "@/services/training"
+
 export const makeUpdateKeywords = function({ db }) {
-  return function updateKeywords({ key, array }) {
-    return db
+  return async function updateKeywords({ key, array }) {
+    await db
       .get("keywords")
       .set(key, array)
       .write()
+    // if(key === 'languages') {
+
+    //   console.log("training ....")
+    //   trainData()
+    // }
   }
 }
 export const makeGetKeywords = function({ db }) {
@@ -127,8 +134,10 @@ export const makeGetKeywords = function({ db }) {
 }
 
 export const makeSetKeywords = function({ db }) {
-  return function setKeywords(keywords) {
-    return db.set("keywords", keywords).write()
+  return async function setKeywords(keywords) {
+    await db.set("keywords", keywords).write()
+    console.log("training ....")
+    // trainData()
   }
 }
 

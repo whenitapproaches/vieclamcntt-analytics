@@ -4,11 +4,14 @@ import {
   updateLastArticlesUpdated,
 } from "@/database"
 import moment from "moment"
-import { fetchArticles, articlesToJob } from "@/services/facebook"
+import { fetchArticles } from "@/services/facebook"
+import { articlesToJob } from "@/services/facebook.worker"
 
 import articleSamples from "./articles.example"
 
-import { exportExcel } from "@/common/exportExcel"
+// import { exportExcel } from "@/common/exportExcel"
+import { chunk } from "lodash"
+
 
 const initialState = function() {
   return {
@@ -59,23 +62,31 @@ export default {
     },
     async scanArticles({ state, dispatch }) {
       let articles = state.articles
-      await articles.forEach(async (article) => {
-        let job = await articlesToJob(article)
-        await dispatch(
-          "Jobs/createJob",
-          {
-            company: job.company,
-            languages: job.languages,
-            post_link: article.post_link,
-            posted_date: moment(article.posted_date).valueOf(),
-            content: article.content,
-            auto: true,
-          },
-          {
-            root: true,
-          }
-        )
-      })
+      const processes = 3
+      let chunkedArticles = chunk(articles, processes)
+      console.log(chunkedArticles)
+      await chunkedArticles.reduce((acc, chunk) => {
+        return acc.then(async () => {
+          await chunk.forEach(async (article) => {
+            let job = await articlesToJob(article)
+            await dispatch(
+              "Jobs/createJob",
+              {
+                company: job.company,
+                languages: job.languages,
+                post_link: article.post_link,
+                posted_date: moment(article.posted_date).valueOf(),
+                content: article.content,
+                auto: true,
+              },
+              {
+                root: true,
+              }
+            )
+            return
+          })
+        })
+      }, Promise.resolve())
       dispatch(
         "Notifications/createNotification",
         {
@@ -120,7 +131,7 @@ export default {
         }
         let articles = await dataToArticles(data, dateRange)
         commit("setArticles", articles)
-        exportExcel(articles)
+        // exportExcel(articles)
         return dispatch(
           "Notifications/createNotification",
           {
@@ -195,10 +206,12 @@ async function dataToArticles(data, dateRange) {
   let groupSettings = await getGroupSettings()
   let { deleteKeywords } = groupSettings
   let dataFilteredByComments = dataFilteredByDate.filter((post) => {
+    if(!deleteKeywords) return post
     if (!post.comments) return true
     let comments = post.comments.data
     let found = false
     comments.forEach((comment) => {
+      if(!comment) return
       if (found) return
       if (deleteKeywords.includes(comment.message)) found = true
     })

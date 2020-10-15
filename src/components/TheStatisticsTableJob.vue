@@ -248,11 +248,13 @@ export default {
 			// let xlsData = filteredData.map((data) => {
 			// 	let date = moment(data.posted_date).format("DD-MM-YYYY")
 			// 	console.log(data.languages)
+			// 	let languages = data.languages.map(languages => languages.quantity + " " + languages.languages.join(" "))
 			// 	return {
 			// 		"Đơn vị tuyển dụng": data.company,
 			// 		"Ngày đăng": date,
-			// 		"Nhu cầu tuyển dụng": data.languages.join(" "),
-			// 		"Số lượng": data.quantity,
+			// 		"Nhu cầu tuyển dụng": languages.join(" , "),
+			// 		"Nội dung": data.content,
+			// 		//"Số lượng": data.quantity,
 			// 		"Link bài đăng": data.post_link,
 			// 		"Quét tự động?": data.auto ? "Có" : "Không",
 			// 	}

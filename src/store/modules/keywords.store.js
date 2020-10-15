@@ -24,7 +24,7 @@ export default {
       prefix_quantity: state.prefix_quantity,
       suffix_quantity: state.suffix_quantity,
       position: state.position,
-      conjunctions: state.conjunctions
+      conjunctions: state.conjunctions,
     }),
     editingKeywordsStatus: (state) => state.isEditing,
     creatingKeywordsStatus: (state) => state.isCreating,
@@ -90,7 +90,7 @@ export default {
         [state.currentCreatingField]: arr,
       })
       await dispatch("updateKeywords", {
-        key: state.currentEditingField,
+        key: state.currentCreatingField,
         array: arr,
       })
     },

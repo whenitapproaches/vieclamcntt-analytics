@@ -20,7 +20,9 @@ db.defaults({
     position: [],
     conjunctions: []
   },
-  groupSettings: {}
+  groupSettings: {
+    deleteKeywords: []
+  }
 }).write()
 
 import {
