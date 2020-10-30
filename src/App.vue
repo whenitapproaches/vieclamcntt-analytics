@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<TheSidebar />
-		<main class="box mb-0" :class="{'sidebar-is-active': sidebarStatus}">
+		<main class="box mb-0 px-6 py-6" :class="{'sidebar-is-active': sidebarStatus}">
 			<base-button class="is-warning is-main sidebar-toggler" @click="toggleSidebar">
 				<base-icon>{{togglerIconName}}</base-icon>
 			</base-button>
@@ -52,8 +52,9 @@ export default {
 	-moz-osx-font-smoothing: grayscale;
 }
 main.sidebar-is-active {
-	width: calc(100vw - 150px);
-	margin-left: 150px;
+	$w: 120px;
+	width: calc(100vw - #{$w});
+	margin-left: $w;
 }
 main {
 	z-index: 100;
@@ -65,7 +66,7 @@ main {
 	.sidebar-toggler {
 		position: fixed;
 		bottom: 30px;
-		left: 40px;
+		left: 25px;
 		z-index: 2;
 	}
 }

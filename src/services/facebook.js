@@ -16,7 +16,7 @@ export const fetchArticles = async function(dateRange) {
       since: dateRangeInUnix[0],
       until: dateRangeInUnix[1],
       limit: 500,
-      fields: "message,created_time,comments{message}",
+      fields: "message,attachments{description},created_time,comments{message}",
     },
   })
 }

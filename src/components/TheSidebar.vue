@@ -72,7 +72,7 @@ export default {
 
 <style scoped lang="scss">
 aside {
-	$width: 150px;
+	$width: 120px;
 	width: $width;
 	height: 100%;
 	position: fixed;
@@ -118,6 +118,7 @@ aside {
 			color: var(--text-secondary-color);
 			font-weight: bold;
 			text-transform: uppercase;
+			font-size: 0.85rem;
 		}
 	}
 }

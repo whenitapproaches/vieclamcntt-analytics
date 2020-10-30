@@ -7,15 +7,14 @@ import moment from "moment"
 import { fetchArticles } from "@/services/facebook"
 import { articlesToJob } from "@/services/facebook.worker"
 
-import articleSamples from "./articles.example"
+// import articleSamples from "./articles.example"
 
 // import { exportExcel } from "@/common/exportExcel"
 import { chunk } from "lodash"
 
-
 const initialState = function() {
   return {
-    articles: articleSamples,
+    articles: [],
     lastArticlesUpdated: null,
     fetchingArticlesDateRange: [],
   }
@@ -111,6 +110,7 @@ export default {
           }
         )
       }
+      dateRange[1] = moment(dateRange[1]).add("24", "hour")
       try {
         let response = await fetchArticles(dateRange)
         console.log(response)
@@ -144,6 +144,19 @@ export default {
         )
       } catch (error) {
         console.dir(error)
+        if (error.response.status === 403) {
+          return dispatch(
+            "Notifications/createNotification",
+            {
+              message:
+                "Vượt giới hạn Facebook cho phép, vui lòng lấy token từ một app khác.",
+              status: "error",
+            },
+            {
+              root: true,
+            }
+          )
+        }
         return dispatch(
           "Notifications/createNotification",
           {
@@ -195,6 +208,23 @@ const keycapDigits = [
   "9️⃣",
 ]
 async function dataToArticles(data, dateRange) {
+  data = data.map((post) => {
+    if (!post.attachments) return post
+
+    let message
+
+    let postMessage = post.message ? post.message : ""
+
+    let description = post.attachments.data[0].description
+
+    message =
+      postMessage.length < description.length ? description : postMessage
+
+    return {
+      ...post,
+      message,
+    }
+  })
   let dataFilteredByDate = data.filter((post) => {
     let created_time_value = moment(post.created_time).valueOf()
     return (
@@ -206,12 +236,12 @@ async function dataToArticles(data, dateRange) {
   let groupSettings = await getGroupSettings()
   let { deleteKeywords } = groupSettings
   let dataFilteredByComments = dataFilteredByDate.filter((post) => {
-    if(!deleteKeywords) return post
+    if (!deleteKeywords) return post
     if (!post.comments) return true
     let comments = post.comments.data
     let found = false
     comments.forEach((comment) => {
-      if(!comment) return
+      if (!comment) return
       if (found) return
       if (deleteKeywords.includes(comment.message)) found = true
     })
