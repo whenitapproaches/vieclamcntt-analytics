@@ -51,6 +51,11 @@
 					>PHÂN TÍCH</base-button
 				>
 			</template>
+			<template v-slot:delete="props">
+				<base-button class="is-danger mx-auto" @click="deleteArticleButton(props.index)"
+					>XÓA</base-button
+				>
+			</template>
 			<template v-slot:posted_date="props">{{
 				props.row.posted_date | date_filter
 			}}</template>
@@ -80,7 +85,7 @@ import TheArticlesTableScanButton from "@/components/TheArticlesTableScanButton"
 import { shell } from "electron"
 
 function delay(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms))
+	return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export default {
@@ -97,7 +102,7 @@ export default {
 			tooltip: `Thời gian quét bài đăng bắt đầu và kết thúc lúc 0 giờ của hai khoảng.
 Mỗi quét lấy được khoảng 500 bài.`,
 			filteringDateRange: null,
-			columns: ["posted_date", "content", "post_link", "scan"],
+			columns: ["posted_date", "content", "post_link", "delete", "scan"],
 			options: {
 				headings: {
 					posted_date: "Ngày đăng",
@@ -134,7 +139,7 @@ Mỗi quét lấy được khoảng 500 bài.`,
 						callback: function (row, query) {
 							if (!query[0] || !query[1]) return true
 							let dateStart = moment(query[0])
-							let dateEnd = moment(query[1])
+							let dateEnd = moment(query[1]).add("24", "hours")
 							let rowDate = moment(row.posted_date)
 							return rowDate.isBefore(dateEnd) && rowDate.isAfter(dateStart)
 						},
@@ -157,6 +162,7 @@ Mỗi quét lấy được khoảng 500 bài.`,
 			fetchArticlesFromFacebook: "fetchArticlesFromFacebook",
 			scanArticles: "scanArticles",
 			scanArticle: "scanArticle",
+			deleteArticle: "deleteArticle"
 		}),
 		...mapActions("Notifications", {
 			createNotification: "createNotification",
@@ -182,14 +188,20 @@ Mỗi quét lấy được khoảng 500 bài.`,
 		},
 		async scanArticlesButton() {
 			this.createNotification({
-				message:
-					"Đang phân tích..",
+				message: "Đang phân tích..",
 				status: "loading",
 			})
 			await delay(100)
 			await this.scanArticles()
 			this.$router.push({
 				name: "Statistics",
+			})
+		},
+		deleteArticleButton(index) {
+			this.deleteArticle(index)
+			this.createNotification({
+				message: "Xóa thành công",
+				status: "success"
 			})
 		},
 	},

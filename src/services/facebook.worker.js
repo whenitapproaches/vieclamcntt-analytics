@@ -208,7 +208,7 @@ function searchForHiringPhraseSpecialCase(content) {
     if (suffixKeyword && languageKeyword) {
       languages = [findLanguageKey(languageKeyword)]
       return {
-        quantity: 1,
+        quantity: 2,
         languages,
       }
     }
@@ -231,7 +231,7 @@ function searchForHiringPhraseSpecialCase(content) {
     if (suffixKeyword && languageKeyword) {
       languages = [findLanguageKey(languageKeyword)]
       return {
-        quantity: 1,
+        quantity: 2,
         languages,
       }
     }
@@ -341,7 +341,7 @@ function searchForHiringPhraseFirstPhase(paragraph) {
     if (prefixKeyword && languageKeyword && suffixKeyword) {
       languages = [searchForFirstLanguage(paragraph)]
       return {
-        quantity: 1,
+        quantity: 2,
         languages,
       }
     }
@@ -384,7 +384,7 @@ function searchForHiringPhraseFirstPhase(paragraph) {
     if (prefixKeyword && languageKeyword) {
       languages = [searchForFirstLanguage(paragraph)]
       return {
-        quantity: 1,
+        quantity: 2,
         languages,
       }
     }
@@ -653,7 +653,7 @@ function checkUnorderedListLines(lines) {
 
   arrayOfJobs = linesWithNumberListStyle.map((lineType) => {
     return {
-      quantity: +lineType.listStyleSecond || 1,
+      quantity: +lineType.listStyleSecond || 2,
       languages: [searchForFirstLanguage(lineType.text)],
     }
   })

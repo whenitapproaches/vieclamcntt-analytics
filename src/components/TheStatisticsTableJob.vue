@@ -6,43 +6,72 @@
 		</div>
 		<TheStatisticsTableJobDeleteAllPrompt
 			@close="closeDeletingAllJobs"
-			:class="{'is-active': deletingAllJobsStatus}"
+			:class="{ 'is-active': deletingAllJobsStatus }"
 		/>
-		<TheStatisticsTableJobCreate :class="{'is-active': creatingJobStatus}" @close="closeCreatingJob" />
+		<TheStatisticsTableJobCreate
+			:class="{ 'is-active': creatingJobStatus }"
+			@close="closeCreatingJob"
+		/>
 		<TheStatisticsTableJobDelete
 			:id="currentDeletingJobId"
 			@close="closeDeletingJob"
-			:class="{'is-active': deletingJobStatus}"
+			:class="{ 'is-active': deletingJobStatus }"
 		/>
 		<TheStatisticsTableJobEdit
 			:id="currentEditingJobId"
 			:job="currentEditingJob"
 			@close="closeEditingJob"
-			:class="{'is-active': editingJobStatus}"
+			:class="{ 'is-active': editingJobStatus }"
 		/>
-		<v-client-table ref="jobsTable" :data="jobs" :columns="columns" :options="options">
+		<v-client-table
+			ref="jobsTable"
+			:data="jobs"
+			:columns="columns"
+			:options="options"
+		>
 			<template v-slot:edit="props">
-				<base-button class="is-warning" @click="editJobButton(props.row.id, props.row)">Sửa</base-button>
+				<base-button
+					class="is-warning"
+					@click="editJobButton(props.row.id, props.row)"
+					>Sửa</base-button
+				>
 			</template>
 			<template v-slot:child_row="props">
-				<p class="px-6 py-4" style="white-space: pre-wrap;">{{props.row.content}}</p>
+				<p
+					class="px-6 py-4"
+					style="
+						white-space: pre-wrap;
+						column-count: 2;
+						column-rule: 2px solid #aaa;
+						column-gap: 50px;
+					"
+				>
+					{{ props.row.content }}
+				</p>
 			</template>
 			<template v-slot:content></template>
 			<template v-slot:delete="props">
-				<base-button class="is-danger" @click="deleteJobButton(props.row.id)">Xóa</base-button>
+				<base-button class="is-danger" @click="deleteJobButton(props.row.id)"
+					>Xóa</base-button
+				>
 			</template>
 			<template v-slot:company="props">
-				<strong>{{props.row.company}}</strong>
+				<strong>{{ props.row.company }}</strong>
 			</template>
 			<template v-slot:post_link="props">
 				<base-button
 					v-if="props.row.post_link"
 					class="is-info mx-auto"
 					@click="openExternalLink(props.row.post_link)"
-				>Mở</base-button>
+					>Mở</base-button
+				>
 			</template>
-			<template v-slot:languages="props">{{props.row.languages | languages_filter}}</template>
-			<template v-slot:posted_date="props">{{props.row.posted_date | date_filter}}</template>
+			<template v-slot:languages="props">{{
+				props.row.languages | languages_filter
+			}}</template>
+			<template v-slot:posted_date="props">{{
+				props.row.posted_date | date_filter
+			}}</template>
 			<template v-slot:auto="props">
 				<base-icon v-if="props.row.auto">done</base-icon>
 			</template>
@@ -65,10 +94,13 @@
 		</v-client-table>
 		<div class="columns">
 			<div class="column is-narrow">
-				<p>Tổng cộng: {{jobs.length}} bài đăng</p>
+				<p>Tổng cộng: {{ jobs.length }} bài đăng</p>
 			</div>
 		</div>
-		<TheStatisticsTableExportToExcelButton class="mr-5" @click="exportToExcel" />
+		<TheStatisticsTableExportToExcelButton
+			class="mr-5"
+			@click="exportToExcel"
+		/>
 	</div>
 </template>
 
@@ -186,6 +218,15 @@ export default {
 					posted_date: "has-text-centered",
 				},
 				skin: "table is-bordered is-striped is-hoverable is-fullwidth",
+				rowClassCallback: (row) => {
+					if (
+						row.languages.some((language) =>
+							language.languages.includes("Không tìm thấy nhu cầu")
+						)
+					)
+						return "no-job"
+					return ""
+				},
 				customFilters: [
 					{
 						name: "dateRangeFilter",
@@ -193,7 +234,7 @@ export default {
 							console.log("sorting")
 							if (!query[0] || !query[1]) return true
 							let dateStart = moment(query[0])
-							let dateEnd = moment(query[1])
+							let dateEnd = moment(query[1]).add("24", "hours")
 							let rowDate = moment(row.posted_date)
 							return rowDate.isBefore(dateEnd) && rowDate.isAfter(dateStart)
 						},
@@ -302,4 +343,11 @@ export default {
 </script>
 
 <style lang="scss">
+.no-job {
+	$bg-no-job: #ffd4d4;
+	background-color: $bg-no-job;
+	&:hover {
+		background-color: $bg-no-job !important;
+	}
+}
 </style>

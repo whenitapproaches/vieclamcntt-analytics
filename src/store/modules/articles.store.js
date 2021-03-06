@@ -97,6 +97,9 @@ export default {
         }
       )
     },
+    deleteArticle({state}, index) {
+      state.articles = [...state.articles.slice(0, index - 1), ...state.articles.slice(index)]
+    },
     async fetchArticlesFromFacebook({ commit, dispatch }, dateRange = []) {
       if (!dateRange[0] || !dateRange[1]) {
         return dispatch(
@@ -215,7 +218,7 @@ async function dataToArticles(data, dateRange) {
 
     let postMessage = post.message ? post.message : ""
 
-    let description = post.attachments.data[0].description
+    let description = post.description
 
     message =
       postMessage.length < description.length ? description : postMessage
